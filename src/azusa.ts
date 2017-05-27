@@ -25,7 +25,7 @@ export default class Azusa extends EventEmitter {
     const {
       width = window.innerWidth,
       height = window.innerHeight,
-      subdivisionSize = 256
+      subdivisionSize = 1024
     } = option;
     const renderer = new THREE.WebGLRenderer({
       canvas: option.view
@@ -38,12 +38,17 @@ export default class Azusa extends EventEmitter {
 
     const scene = new THREE.Scene();
 
+    this.scene = scene;
+    this.camera = camera;
+
+    const frequencyBinCount = this.loadAudio(subdivisionSize).frequencyBinCount;
+
     const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
 
-    const nodeCount = subdivisionSize / 2 * 0.75;
+    const nodeCount = frequencyBinCount * 0.80;
 
     this.nodes = range(0, nodeCount).map((index) => {
-      return new node(20, index / nodeCount * 360, new THREE.Vector2(0, 0));
+      return new node(20, (index / nodeCount * 360 + 45) % 360, new THREE.Vector2(0, 0));
     })
 
     this.lineB = new THREE.Line(
@@ -72,9 +77,6 @@ export default class Azusa extends EventEmitter {
     scene.add(this.lineB)
     scene.add(this.lineA)
     this.renderer = renderer;
-    this.scene = scene;
-    this.camera = camera;
-    this.loadAudio(subdivisionSize);
     this.render();
   }
   resize(width: number, height: number) {
@@ -84,8 +86,9 @@ export default class Azusa extends EventEmitter {
   }
 
   private loadAudio(fftsize: number) {
-    this.audio = new Audio();
+    this.audio = new Audio({fftsize});
     this.camera.add(this.audio.listener);
+    return this.audio;
   }
 
   private renderGeometries(vertices: THREE.Vector2[]) {
@@ -128,8 +131,8 @@ export default class Azusa extends EventEmitter {
   private render() {
     this.renderer.render(this.scene, this.camera);
     const audioDate = this.audio.getFrequencyData()
-    this.nodes.forEach((node, index) => {
-      node.strength = audioDate[index] * 0.1;
+    this.nodes.forEach((node, index, array) => {
+      node.strength = audioDate[(index) % array.length] * 0.05;
       node.transition(0.5);
     })
     this.updateGeometries();

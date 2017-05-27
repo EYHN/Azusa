@@ -1,6 +1,6 @@
 import Azusa from './azusa';
 
-const testSound = require("file-loader!./static/test.mp3");
+const testSound = require("file-loader!./static/cha.mp3");
 
 const azusa = new Azusa({
   view:document.getElementById('app') as HTMLCanvasElement

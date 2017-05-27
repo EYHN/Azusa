@@ -42929,6 +42929,7 @@ var Audio = function (_events_1$EventEmitte) {
         _this.audioLoader = new THREE.AudioLoader();
         _this.analyser = new THREE.AudioAnalyser(_this.sound, option.fftsize || 256);
         _this.Volume = 0.5;
+        _this.frequencyBinCount = _this.analyser.analyser.frequencyBinCount;
         return _this;
     }
 
@@ -43005,7 +43006,7 @@ var Azusa = function (_events_1$EventEmitte) {
             _option$height = option.height,
             height = _option$height === undefined ? window.innerHeight : _option$height,
             _option$subdivisionSi = option.subdivisionSize,
-            subdivisionSize = _option$subdivisionSi === undefined ? 256 : _option$subdivisionSi;
+            subdivisionSize = _option$subdivisionSi === undefined ? 1024 : _option$subdivisionSi;
 
         var renderer = new THREE.WebGLRenderer({
             canvas: option.view
@@ -43015,10 +43016,13 @@ var Azusa = function (_events_1$EventEmitte) {
         camera.position.set(0, 0, 100);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         var scene = new THREE.Scene();
+        _this.scene = scene;
+        _this.camera = camera;
+        var frequencyBinCount = _this.loadAudio(subdivisionSize).frequencyBinCount;
         var lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
-        var nodeCount = subdivisionSize / 2 * 0.75;
+        var nodeCount = frequencyBinCount * 0.80;
         _this.nodes = range_1.range(0, nodeCount).map(function (index) {
-            return new node_1.node(20, index / nodeCount * 360, new THREE.Vector2(0, 0));
+            return new node_1.node(20, (index / nodeCount * 360 + 45) % 360, new THREE.Vector2(0, 0));
         });
         _this.lineB = new THREE.Line(new THREE.BufferGeometry().addAttribute('position', _this.renderGeometries(_this.nodes.map(function (node) {
             return node.positionB;
@@ -43035,9 +43039,6 @@ var Azusa = function (_events_1$EventEmitte) {
         scene.add(_this.lineB);
         scene.add(_this.lineA);
         _this.renderer = renderer;
-        _this.scene = scene;
-        _this.camera = camera;
-        _this.loadAudio(subdivisionSize);
         _this.render();
         return _this;
     }
@@ -43052,8 +43053,9 @@ var Azusa = function (_events_1$EventEmitte) {
     }, {
         key: "loadAudio",
         value: function loadAudio(fftsize) {
-            this.audio = new audio_1.Audio();
+            this.audio = new audio_1.Audio({ fftsize: fftsize });
             this.camera.add(this.audio.listener);
+            return this.audio;
         }
     }, {
         key: "renderGeometries",
@@ -43097,8 +43099,8 @@ var Azusa = function (_events_1$EventEmitte) {
         value: function render() {
             this.renderer.render(this.scene, this.camera);
             var audioDate = this.audio.getFrequencyData();
-            this.nodes.forEach(function (node, index) {
-                node.strength = audioDate[index] * 0.1;
+            this.nodes.forEach(function (node, index, array) {
+                node.strength = audioDate[index % array.length] * 0.05;
                 node.transition(0.5);
             });
             this.updateGeometries();
@@ -43206,7 +43208,7 @@ exports.range = range;
 /* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "9a3c248152b16279f3ab9aa48fa09606.mp3";
+module.exports = __webpack_require__.p + "0ac848d647bb88b66a5fdd017e583723.mp3";
 
 /***/ }),
 /* 51 */
