@@ -118,6 +118,8 @@ export default class Azusa extends EventEmitter {
         )
         Attribute.needsUpdate = true;
       })
+      AttributeA.set([AttributeA.array[0], AttributeA.array[1]], positions.length * 3);
+      AttributeB.set([AttributeB.array[0], AttributeB.array[1]], positions.length * 3);
       AttributeA.needsUpdate = true;
       AttributeB.needsUpdate = true;
     }

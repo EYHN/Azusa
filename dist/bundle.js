@@ -43005,7 +43005,7 @@ var Azusa = function (_events_1$EventEmitte) {
             _option$height = option.height,
             height = _option$height === undefined ? window.innerHeight : _option$height,
             _option$subdivisionSi = option.subdivisionSize,
-            subdivisionSize = _option$subdivisionSi === undefined ? 128 : _option$subdivisionSi;
+            subdivisionSize = _option$subdivisionSi === undefined ? 256 : _option$subdivisionSi;
 
         var renderer = new THREE.WebGLRenderer({
             canvas: option.view
@@ -43016,16 +43016,28 @@ var Azusa = function (_events_1$EventEmitte) {
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         var scene = new THREE.Scene();
         var lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
-        var line = new THREE.Line(new THREE.Geometry(), lineMaterial);
-        scene.add(line);
-        _this.line = line;
+        var nodeCount = subdivisionSize / 2 * 0.75;
+        _this.nodes = range_1.range(0, nodeCount).map(function (index) {
+            return new node_1.node(20, index / nodeCount * 360, new THREE.Vector2(0, 0));
+        });
+        _this.lineB = new THREE.Line(new THREE.BufferGeometry().addAttribute('position', _this.renderGeometries(_this.nodes.map(function (node) {
+            return node.positionB;
+        }))), lineMaterial);
+        _this.lineA = new THREE.Line(new THREE.BufferGeometry().addAttribute('position', _this.renderGeometries(_this.nodes.map(function (node) {
+            return node.positionA;
+        }))), lineMaterial);
+        _this.lines = range_1.range(0, nodeCount).map(function (index) {
+            return new THREE.Line(new THREE.BufferGeometry().addAttribute('position', _this.renderGeometries([_this.nodes[index].positionA, _this.nodes[index].positionB])), lineMaterial);
+        });
+        _this.lines.forEach(function (line) {
+            return scene.add(line);
+        });
+        scene.add(_this.lineB);
+        scene.add(_this.lineA);
         _this.renderer = renderer;
         _this.scene = scene;
         _this.camera = camera;
         _this.loadAudio(subdivisionSize);
-        _this.nodes = range_1.range(0, subdivisionSize / 2).map(function (index) {
-            return new node_1.node(20, index / subdivisionSize * 2 * 360, new THREE.Vector2(0, 0));
-        });
         _this.render();
         return _this;
     }
@@ -43044,30 +43056,56 @@ var Azusa = function (_events_1$EventEmitte) {
             this.camera.add(this.audio.listener);
         }
     }, {
+        key: "renderGeometries",
+        value: function renderGeometries(vertices) {
+            var res = [];
+            vertices = vertices.concat(vertices[0]);
+            vertices.forEach(function (value) {
+                res.push(value.x, value.y, 0);
+            });
+            return new THREE.BufferAttribute(new Float32Array(res), 3);
+        }
+    }, {
+        key: "updateGeometries",
+        value: function updateGeometries() {
+            var _this2 = this;
+
+            if (this.nodes) {
+                var geometryA = this.lineA.geometry;
+                var AttributeA = geometryA.getAttribute('position');
+                var geometryB = this.lineB.geometry;
+                var AttributeB = geometryB.getAttribute('position');
+                var positions = this.nodes.map(function (value) {
+                    return [value.positionA, value.positionB];
+                });
+                positions.forEach(function (position, index) {
+                    AttributeA.set([position[0].x, position[0].y], index * 3);
+                    AttributeB.set([position[1].x, position[1].y], index * 3);
+                    var geometry = _this2.lines[index].geometry;
+                    var Attribute = geometry.getAttribute('position');
+                    Attribute.set([position[0].x, position[0].y, 0, position[1].x, position[1].y, 0], 0);
+                    Attribute.needsUpdate = true;
+                });
+                AttributeA.set([AttributeA.array[0], AttributeA.array[1]], positions.length * 3);
+                AttributeB.set([AttributeB.array[0], AttributeB.array[1]], positions.length * 3);
+                AttributeA.needsUpdate = true;
+                AttributeB.needsUpdate = true;
+            }
+        }
+    }, {
         key: "render",
         value: function render() {
             this.renderer.render(this.scene, this.camera);
             var audioDate = this.audio.getFrequencyData();
             this.nodes.forEach(function (node, index) {
-                node.range = node.baseRange + audioDate[index] * 0.1;
+                node.strength = audioDate[index] * 0.1;
+                node.transition(0.5);
             });
-            this.line.geometry = this.geometry;
+            this.updateGeometries();
+            // geometries.forEach((geometry, index) => {
+            //   this.lines[index].geometry = geometry
+            // });
             requestAnimationFrame(this.render.bind(this));
-        }
-    }, {
-        key: "geometry",
-        get: function get() {
-            if (this.nodes) {
-                var geometry = new THREE.BufferGeometry();
-                var vertices = this.nodes.reduce(function (preValue, value) {
-                    var position = value.position;
-                    return preValue.concat([position.x, position.y, 0]);
-                }, []);
-                vertices.push(vertices[0], vertices[1], vertices[2]);
-                geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
-                return geometry;
-            }
-            return new THREE.Geometry();
         }
     }]);
     return Azusa;
@@ -43099,25 +43137,40 @@ var node = function () {
     function node(baseRange, angle, center) {
         (0, _classCallCheck3.default)(this, node);
 
+        this._range = 0;
         this.baseRange = baseRange;
         this.angle = angle;
-        this.range = baseRange;
         this.center = center;
     }
 
     (0, _createClass3.default)(node, [{
-        key: "position",
+        key: "transition",
+        value: function transition(delay) {
+            this._range = Math.max(this._range - delay * this._range * 0.3, 0);
+        }
+    }, {
+        key: "positionA",
         get: function get() {
-            var range = this._range - this.lastRange + this.baseRange;
+            var range = this._range + this.baseRange;
             var x = Math.cos(this.angle * Math.PI / 180) * range;
             var y = Math.sin(this.angle * Math.PI / 180) * range;
             return new THREE.Vector2(this.center.x + x, this.center.y + y);
         }
     }, {
-        key: "range",
-        set: function set(newrange) {
-            this.lastRange = this._range;
-            this._range = newrange;
+        key: "positionB",
+        get: function get() {
+            var range = this._range * -1 + this.baseRange;
+            var x = Math.cos(this.angle * Math.PI / 180) * range;
+            var y = Math.sin(this.angle * Math.PI / 180) * range;
+            return new THREE.Vector2(this.center.x + x, this.center.y + y);
+        }
+    }, {
+        key: "strength",
+        set: function set(newStrength) {
+            this.lastStrength = this.theStrength;
+            this.theStrength = newStrength;
+            this.targetRange = Math.max(this.theStrength - this.lastStrength, 0);
+            if (this.targetRange > this._range) this._range = this.targetRange;
         }
     }]);
     return node;
