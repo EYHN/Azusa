@@ -32,6 +32,6 @@ export class node {
     if (this.targetRange > this._range) this._range = this.targetRange;
   }
   public transition(delay: number) {
-    this._range = Math.max(this._range - delay * this._range * 0.3, 0);
+    this._range = Math.max(this._range - delay * this._range * 5, 0);
   }
 }
