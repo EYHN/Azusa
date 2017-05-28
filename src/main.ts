@@ -1,4 +1,10 @@
 import Azusa from './azusa';
+require('./lib/LuminosityHighPassShader.js');
+require('./lib/CopyShader.js');
+require('./lib/EffectComposer.js');
+require('./lib/RenderPass.js');
+require('./lib/ShaderPass.js');
+require('./lib/UnrealBloomPass');
 
 const testSound = require("file-loader!./static/cha.mp3");
 
