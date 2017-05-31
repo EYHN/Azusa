@@ -20,12 +20,13 @@ export class Audio extends EventEmitter {
     this.Volume = 0.5;
     this.frequencyBinCount = this.analyser.analyser.frequencyBinCount;
   }
-  load(src: string) {
+  load(src: string,onLoad?: Function, onPrgress?: Function, onError?: Function) {
     this.audioLoader.load(src, (buffer: any) => {
       this.sound.setBuffer(buffer);
       this.sound.setLoop(true);
       this.sound.play();
-    }, undefined, undefined);
+      return onLoad(buffer);
+    }, onPrgress, onError);
   }
   set Volume(volume:number){
     this.sound.setVolume(volume);
