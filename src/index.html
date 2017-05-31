@@ -1,23 +1,58 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>EYHN</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
 
-    <body>
-        <canvas id="app"></canvas>
-        <!--<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>-->
-        <style>
-            body {
-                margin: 0px;
-            }
-            #app {
-                position: absolute;
-            }
-        </style>
-        <script src="//cdn.bootcss.com/dat-gui/0.6.5/dat.gui.min.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8" />
+    <title>EYHN</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <div id="bg"></div>
+    <canvas id="app"></canvas>
+    <!--<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>-->
+    <style>
+        body {
+            margin: 0px;
+            background: #000;
+        }
+
+        #app {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        #bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0px;
+            top: 0px;
+            z-index: 1;
+            mix-blend-mode: screen;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            background-size: cover;
+            background-origin: padding-box;
+            background-attachment: scroll;
+            box-shadow: 0px 0px 1000px #000 inset;
+        }
+    </style>
+
+    <svg>
+        <defs>
+            <filter id="toAlpha">
+                <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0
+                            0 1 0 0 0
+                            0 0 1 0 0
+                            1 1 1 0 0" />
+            </filter>
+        </defs>
+    </svg>
+
+    <script src="//cdn.bootcss.com/dat-gui/0.6.5/dat.gui.min.js"></script>
+</body>
+
 </html>

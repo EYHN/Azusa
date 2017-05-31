@@ -2,7 +2,7 @@
  * @author alteredq / http://alteredqualia.com/
  */
 
-import THREE from 'three';
+import * as THREE from 'three';
 
 THREE.EffectComposer = function ( renderer, renderTarget ) {
 

@@ -4,7 +4,7 @@
  * Full-screen textured quad shader
  */
 
-import THREE from 'three';
+import * as THREE from 'three';
 
 THREE.CopyShader = {
 
