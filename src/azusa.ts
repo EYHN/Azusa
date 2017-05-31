@@ -53,7 +53,8 @@ export default class Azusa extends EventEmitter {
     this.cutEnd = cutEnd;
     const renderer = new THREE.WebGLRenderer({
       canvas: option.view,
-      alpha: true
+      alpha: true,
+      antialias: true
     });
     renderer.setSize(width, height);
 
