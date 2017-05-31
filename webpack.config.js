@@ -26,8 +26,7 @@ module.exports = {
         new webpack.DefinePlugin({
 			'process.env.NODE_ENV': JSON.stringify('development')
 		}),
-        new HtmlWebpackPlugin(HtmlWebpackConfig),
-        // new webpack.optimize.UglifyJsPlugin({ sourceMap: true })
+        new HtmlWebpackPlugin(HtmlWebpackConfig)
     ],
 
     resolve: {

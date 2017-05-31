@@ -7,7 +7,7 @@
     "clean": "rimraf dist",
     "start": "webpack-dev-server --inline --hot --progress",
     "dev": "npm run start",
-    "build": "webpack"
+    "build": "webpack --config webpack.config.prod.js"
   },
   "author": "EYHN",
   "license": "GPL-2.0",
@@ -28,6 +28,7 @@
     "uglify-js": "^3.0.10",
     "url-loader": "^0.5.8",
     "webpack": "^2.5.1",
+    "webpack-bundle-analyzer": "^2.8.2",
     "webpack-dev-server": "^2.4.5"
   }
 }

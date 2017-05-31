@@ -73,6 +73,9 @@ export default class Azusa extends EventEmitter {
     copyShader.renderToScreen = true;
     this.composer.addPass(copyShader);
 
+    const light = new THREE.DirectionalLight(0xffffff);
+    scene.add(light);
+
     this.scene = scene;
     this.camera = camera;
 
@@ -170,25 +173,31 @@ export default class Azusa extends EventEmitter {
 
   private loadTriangle() {
     const TriangleGroup = new THREE.Group();
+    const material = new THREE.MeshBasicMaterial({ color: 0x03a9f4 });
     const lineMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 });
-    setInterval(this.addTriangle.bind(this, lineMaterial), 1500);
+    setInterval(this.addTriangle.bind(this, material, lineMaterial), 500);
     return TriangleGroup;
   }
 
-  private addTriangle(lineMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 })) {
+  private addTriangle(
+    material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ color: 0x03a9f4 }),
+    lineMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 })) {
     const point = this.Triangles.length;
-    const triangle = this.makeTriangle(lineMaterial, (t) => {
+    const triangle = this.makeTriangle(material, lineMaterial, (t) => {
       this.Triangles = this.Triangles.filter((triangle) => {
         return triangle !== t;
       })
-      this.TriangleGroup.remove(t.line);
+      this.TriangleGroup.remove(t.group);
     });
-    this.TriangleGroup.add(triangle.line);
+    this.TriangleGroup.add(triangle.group);
     this.Triangles.push(triangle);
   }
 
-  private makeTriangle(lineMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 }), cb: (t: Triangle) => void) {
-    const triangle = new Triangle(1, new THREE.Vector3(0, 0, 0), Math.random() * 360, randomRange(2, 0.30), randomRange(0.1, 0.02), lineMaterial, {
+  private makeTriangle(
+    material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ color: 0x03a9f4 }),
+    lineMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 }),
+    cb: (t: Triangle) => void) {
+    const triangle = new Triangle(2, new THREE.Vector3(0, 0, 0), Math.random() * 360, randomRange(5, 1), randomRange(0.1, 0.02), material, lineMaterial, {
       startShow: 15,
       endShow: 30,
       startHide: 60,
