@@ -11,7 +11,6 @@
 <body>
     <div id="bg"></div>
     <canvas id="app"></canvas>
-    <!--<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>-->
     <style>
         body {
             margin: 0px;
@@ -41,16 +40,9 @@
         }
     </style>
 
-    <svg>
-        <defs>
-            <filter id="toAlpha">
-                <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0
-                            0 1 0 0 0
-                            0 0 1 0 0
-                            1 1 1 0 0" />
-            </filter>
-        </defs>
-    </svg>
+    <script async>
+        (function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//rawgit.com/mrdoob/stats.js/master/build/stats.min.js';document.head.appendChild(script);})()
+    </script>
 
     <script src="//cdn.bootcss.com/dat-gui/0.6.5/dat.gui.min.js"></script>
 </body>
