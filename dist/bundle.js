@@ -45080,6 +45080,7 @@ var Azusa = function (_events_1$EventEmitte) {
         _this.renderer = renderer;
         _this.clock = new THREE.Clock();
         _this.render();
+        _this.resize(width, height);
         return _this;
     }
 
@@ -45113,6 +45114,11 @@ var Azusa = function (_events_1$EventEmitte) {
         key: "resize",
         value: function resize(width, height) {
             this.camera.aspect = width / height;
+            if (width <= 425) {
+                this.camera.fov = 70;
+            } else {
+                this.camera.fov = 45;
+            }
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(width, height);
             this.composer.setSize(width, height);

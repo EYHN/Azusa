@@ -81,12 +81,13 @@ export default class Azusa extends EventEmitter {
     this.lineGroup = this.loadLine(frequencyBinCount - cutEnd - cutFront);
 
     this.TriangleGroup = this.loadTriangle();
-    
+
     this.scene.add(this.TriangleGroup);
     this.scene.add(this.lineGroup);
     this.renderer = renderer;
     this.clock = new THREE.Clock();
     this.render();
+    this.resize(width, height);
   }
 
   loadGui() {
@@ -114,6 +115,11 @@ export default class Azusa extends EventEmitter {
 
   resize(width: number, height: number) {
     this.camera.aspect = width / height;
+    if (width <= 425) {
+      this.camera.fov = 70;
+    } else {
+      this.camera.fov = 45;
+    }
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
     this.composer.setSize(width, height);
@@ -169,9 +175,9 @@ export default class Azusa extends EventEmitter {
     return TriangleGroup;
   }
 
-  private addTriangle(lineMaterial:THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 })) {
+  private addTriangle(lineMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 })) {
     const point = this.Triangles.length;
-    const triangle = this.makeTriangle(lineMaterial,(t) => {
+    const triangle = this.makeTriangle(lineMaterial, (t) => {
       this.Triangles = this.Triangles.filter((triangle) => {
         return triangle !== t;
       })
@@ -181,13 +187,13 @@ export default class Azusa extends EventEmitter {
     this.Triangles.push(triangle);
   }
 
-  private makeTriangle(lineMaterial:THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 }), cb: (t: Triangle) => void) {
-    const triangle = new Triangle(1, new THREE.Vector3(0,0,0), Math.random() * 360, randomRange(2, 0.30), randomRange(0.1, 0.02), lineMaterial, {
+  private makeTriangle(lineMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 }), cb: (t: Triangle) => void) {
+    const triangle = new Triangle(1, new THREE.Vector3(0, 0, 0), Math.random() * 360, randomRange(2, 0.30), randomRange(0.1, 0.02), lineMaterial, {
       startShow: 15,
       endShow: 30,
       startHide: 60,
       endHide: 70
-    },cb)
+    }, cb)
     return triangle;
   }
 
