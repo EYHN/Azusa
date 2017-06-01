@@ -42,4 +42,4 @@ window.addEventListener('resize', () => {
 })
 ```
 
-[Click here to demo](https://eyhn.github.io/Azusa/dist/index.html)
+[Click here to demo](https://eyhn.github.io/Azusa/example)
