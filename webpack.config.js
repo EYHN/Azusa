@@ -13,11 +13,11 @@ var HtmlWebpackConfig = {
 
 module.exports = {
     entry: [
-        "./src/main.ts"
+        "./src/example.ts"
     ],
     output: {
-        filename: "bundle.js",
-        path: __dirname + "/dist"
+        filename: "example.js",
+        path: __dirname + "/example"
     },
 
     devtool: "source-map",

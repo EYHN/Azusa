@@ -13,7 +13,7 @@ require('./lib/RenderPass.js');
 require('./lib/ShaderPass.js');
 require('./lib/UnrealBloomPass');
 
-interface IAzusaOption {
+export interface IAzusaOption {
   view?: HTMLCanvasElement;
   width?: number;
   height?: number;
@@ -74,9 +74,6 @@ export default class Azusa extends EventEmitter {
     copyShader.renderToScreen = true;
     this.composer.addPass(copyShader);
 
-    const light = new THREE.DirectionalLight(0xffffff);
-    scene.add(light);
-
     this.scene = scene;
     this.camera = camera;
 
@@ -103,7 +100,7 @@ export default class Azusa extends EventEmitter {
       bloomThreshold: 0.2,
       bloomRadius: 0
     };
-    const gui = new dat.GUI();
+    const gui = new (window as any).dat.GUI();
     gui.add(params, 'exposure', 0.1, 2);
     gui.add(params, 'bloomThreshold', 0.0, 1.0).onChange((value: any) => {
       this.bloomPass.threshold = Number(value);

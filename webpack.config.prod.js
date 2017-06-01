@@ -5,32 +5,32 @@ var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlug
 var uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 
 var HtmlWebpackConfig = {
-    title: 'hexo',
-    filename: 'index.html',
-    template: "./src/index.html",
-    hash: true,
-    showErrors: true,
-    minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true
-      },
+  title: 'hexo',
+  filename: 'index.html',
+  template: "./src/index.html",
+  hash: true,
+  showErrors: true,
+  minify: {
+    removeComments: true,
+    collapseWhitespace: true,
+    removeRedundantAttributes: true,
+    useShortDoctype: true,
+    removeEmptyAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    keepClosingSlash: true,
+    minifyJS: true,
+    minifyCSS: true,
+    minifyURLs: true
+  },
 };
 
 module.exports = {
   entry: [
-    "./src/main.ts"
+    "./src/example.ts"
   ],
   output: {
-    filename: "bundle.js",
-    path: __dirname + "/dist"
+    filename: "example.js",
+    path: __dirname + "/example"
   },
 
   devtool: "source-map",

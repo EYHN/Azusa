@@ -1,7 +1,8 @@
 import { randomRange } from './util/randomRange';
 import * as THREE from 'three';
+import { Vector3 } from 'three';
 
-interface ILineDistanceOption {
+export interface ILineDistanceOption {
   startShow: number;
   endShow: number;
   startHide: number;

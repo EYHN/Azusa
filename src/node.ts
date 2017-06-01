@@ -1,14 +1,15 @@
 import * as THREE from 'three'
+import { Vector2 } from 'three'
 
 export class node {
   baseRange: number;
   angle: number;
-  center: THREE.Vector2;
+  center: Vector2;
   private lastStrength: number;
   private theStrength: number
   private targetRange: number;
   private _range: number = 0;
-  constructor(baseRange: number, angle: number, center: THREE.Vector2) {
+  constructor(baseRange: number, angle: number, center: Vector2) {
     this.baseRange = baseRange;
     this.angle = angle;
     this.center = center;
@@ -17,13 +18,13 @@ export class node {
     const range = this._range + this.baseRange;
     const x = Math.cos(this.angle * Math.PI / 180) * range;
     const y = Math.sin(this.angle * Math.PI / 180) * range;
-    return new THREE.Vector2(this.center.x + x, this.center.y + y);
+    return new Vector2(this.center.x + x, this.center.y + y);
   }
   public get positionB() {
     const range = this._range * -1 + this.baseRange;
     const x = Math.cos(this.angle * Math.PI / 180) * range;
     const y = Math.sin(this.angle * Math.PI / 180) * range;
-    return new THREE.Vector2(this.center.x + x, this.center.y + y);
+    return new Vector2(this.center.x + x, this.center.y + y);
   }
   public set strength(newStrength: number) {
     this.lastStrength = this.theStrength;

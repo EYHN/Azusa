@@ -1,10 +1,10 @@
 {
   "name": "azusa",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "./lib/azusa.js",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf example",
     "start": "webpack-dev-server --inline --hot --progress",
     "dev": "npm run start",
     "build": "webpack --config webpack.config.prod.js"
@@ -22,13 +22,16 @@
     "babel-preset-env": "^1.5.0",
     "file-loader": "^0.11.1",
     "html-webpack-plugin": "^2.28.0",
+    "rimraf": "^2.6.1",
     "source-map-loader": "^0.2.1",
-    "three": "^0.85.2",
     "typescript": "^2.3.3",
     "uglify-js": "^3.0.10",
     "url-loader": "^0.5.8",
     "webpack": "^2.5.1",
     "webpack-bundle-analyzer": "^2.8.2",
     "webpack-dev-server": "^2.4.5"
+  },
+  "dependencies": {
+    "three": "^0.85.2"
   }
 }
