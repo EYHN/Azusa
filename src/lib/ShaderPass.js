@@ -2,7 +2,7 @@
  * @author alteredq / http://alteredqualia.com/
  */
 
-import * as THREE from 'three';
+import THREE from './ExtendThree';
 
 THREE.ShaderPass = function ( shader, textureID ) {
 

@@ -5,7 +5,7 @@
  * http://en.wikipedia.org/wiki/Luminosity
  */
 
-import * as THREE from 'three';
+import THREE from './ExtendThree';
 
 THREE.LuminosityHighPassShader = {
 
