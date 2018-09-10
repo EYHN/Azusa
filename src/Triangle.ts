@@ -1,6 +1,5 @@
 import { randomRange } from './util/randomRange';
 import * as THREE from 'three';
-import { Vector3 } from 'three';
 
 export interface ILineDistanceOption {
   startShow: number;
@@ -15,9 +14,9 @@ export class Triangle {
   public distance: number;
   public rotateSpeed: number;
   public angle: number;
-  public pointA: THREE.Vector3;
-  public pointB: THREE.Vector3;
-  public pointC: THREE.Vector3;
+  // public pointA: THREE.Vector3;
+  // public pointB: THREE.Vector3;
+  // public pointC: THREE.Vector3;
   public speed: number;
   public center: THREE.Vector3;
   public mesh: THREE.Mesh;

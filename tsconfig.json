@@ -1,18 +1,23 @@
 {
     "compilerOptions": {
         "declaration": true,
-        "outDir": "./lib/",
         "lib": [
-            "es2015","dom"
+            "es6","dom"
         ],
+        "outDir": "lib",
         "sourceMap": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "target": "es5",
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
         "noImplicitAny": true,
-        "module": "commonjs",
-        "target": "es2017",
-        "jsx": "preserve",
-        "typeRoots": [
-            "./node_modules/@types"
-        ]
+        "strictNullChecks": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "noUnusedLocals": true,
+        "strict": true,
+        "alwaysStrict": true,
+        "allowSyntheticDefaultImports": true
     },
     "include": [
         "src/**/*"

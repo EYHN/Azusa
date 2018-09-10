@@ -1,13 +1,12 @@
-import * as THREE from 'three'
 import { Vector2 } from 'three'
 
 export class node {
-  baseRange: number;
-  angle: number;
-  center: Vector2;
-  private lastStrength: number;
-  private theStrength: number
-  private targetRange: number;
+  private baseRange: number;
+  private angle: number;
+  private center: Vector2;
+  private lastStrength: number = 0;
+  private theStrength: number = 0;
+  private targetRange: number = 0;
   private _range: number = 0;
   constructor(baseRange: number, angle: number, center: Vector2) {
     this.baseRange = baseRange;

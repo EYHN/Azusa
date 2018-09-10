@@ -1,23 +1,25 @@
-var webpack = require('webpack');
-var path = require('path')
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-var HtmlWebpackConfig = {
+const HtmlWebpackConfig = {
     title: 'azusa',
-    filename: 'index.html',
     template: "./src/index.html",
-    hash: true,
+    inject: true,
     showErrors: true
 };
 
 module.exports = {
+    mode: 'development',
+
     entry: [
+        "@babel/polyfill",
         "./src/example.ts"
     ],
+
     output: {
-        filename: "example.js",
-        path: __dirname + "/example"
+        filename: "example.[hash:8].js",
+        path: __dirname + "/example",
     },
 
     devtool: "source-map",
@@ -26,54 +28,76 @@ module.exports = {
         new webpack.DefinePlugin({
 			'process.env.NODE_ENV': JSON.stringify('development')
 		}),
-        new HtmlWebpackPlugin(HtmlWebpackConfig)
+        new HtmlWebpackPlugin(HtmlWebpackConfig),
     ],
 
     resolve: {
-        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+        extensions: [".ts", ".js"]
     },
 
     module: {
+        strictExportPresence: true,
         rules: [
-            {
-                test: /\.ts?$/,
-                use: [
-                    {
-                        loader: "awesome-typescript-loader",
-                        options: {
-                            useBabel: true
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.js$/,
-                exclude: path.resolve(__dirname, "node_modules"),
-                use: [{
-                    loader: 'babel-loader'
-                }],
-            },
             {
                 test: /\.(ts|js)$/,
                 enforce: "pre",
                 use: [{ loader: 'source-map-loader' }]
-            }
+            },
+            {
+                oneOf: [
+                    {
+                        test: /\.ts$/,
+                        use: [
+                            {
+                                loader: 'babel-loader',
+                                options: {
+                                    compact: true,
+                                },
+                            },
+                            {
+                                loader: "ts-loader",
+                                options: {
+                                    // disable type checker - we will use it in fork plugin
+                                    transpileOnly: true,
+                                },
+                            }
+                        ]
+                    },
+                    {
+                        test: /\.js$/,
+                        exclude: path.resolve(__dirname, "node_modules"),
+                        use: [{
+                            loader: 'babel-loader',
+                            options: {
+                                compact: true,
+                            },
+                        }],
+                    },
+                    {
+                        // Exclude `js` files to keep "css" loader working as it injects
+                        // its runtime that would otherwise processed through "file" loader.
+                        // Also exclude `html` and `json` extensions so they get processed
+                        // by webpacks internal loaders.
+                        exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
+                        loader: require.resolve('file-loader'),
+                        options: {
+                          name: 'media/[name].[hash:8].[ext]',
+                        },
+                    },
+                ]
+            },
+
         ]
+    },
+
+    externals: {
+        three: 'THREE'
     },
 
     devServer: {
 		port: process.env.PORT || 8888,
-		host: 'localhost',
-		publicPath: '/',
-		contentBase: './src',
+		contentBase: "/",
 		historyApiFallback: true,
-		open: true,
-		proxy: {
-			// OPTIONAL: proxy configuration:
-			// '/optional-prefix/**': { // path pattern to rewrite
-			//   target: 'http://target-host.com',
-			//   pathRewrite: path => path.replace(/^\/[^\/]+\//, '')   // strip first path segment
-			// }
-		}
+		open: true
 	}
 }

@@ -3,7 +3,7 @@
  Inspired from Unreal Engine::
  https://docs.unrealengine.com/latest/INT/Engine/Rendering/PostProcessEffects/Bloom/
  */
-import * as THREE from 'three';
+import THREE from './ExtendThree';
 
 THREE.UnrealBloomPass = function ( resolution, strength, radius, threshold ) {
 

@@ -3,15 +3,14 @@ import { Triangle } from './Triangle';
 import { range } from './util/range';
 import { node } from './node';
 import { Audio } from './audio';
-import { EventEmitter } from 'events';
-import * as THREE from 'three';
+import THREE from './lib/ExtendThree';
 
-require('./lib/LuminosityHighPassShader.js');
-require('./lib/CopyShader.js');
-require('./lib/EffectComposer.js');
-require('./lib/RenderPass.js');
-require('./lib/ShaderPass.js');
-require('./lib/UnrealBloomPass');
+import './lib/LuminosityHighPassShader.js';
+import './lib/CopyShader.js';
+import './lib/EffectComposer.js';
+import './lib/RenderPass.js';
+import './lib/ShaderPass.js';
+import './lib/UnrealBloomPass';
 
 export interface IAzusaOption {
   view?: HTMLCanvasElement;
@@ -22,7 +21,7 @@ export interface IAzusaOption {
   cutFront?: number;
 }
 
-export default class Azusa extends EventEmitter {
+export class Azusa {
   private renderer: THREE.WebGLRenderer;
   private camera: THREE.PerspectiveCamera;
   private scene: THREE.Scene;
@@ -41,7 +40,6 @@ export default class Azusa extends EventEmitter {
   private Triangles: Triangle[] = [];
   public audio: Audio;
   constructor(option: IAzusaOption = {}) {
-    super();
     const {
       width = window.innerWidth,
       height = window.innerHeight,
@@ -68,7 +66,7 @@ export default class Azusa extends EventEmitter {
     this.composer.setSize(width, height);
     const renderScene = new THREE.RenderPass(scene, camera)
     this.composer.addPass(renderScene);
-    this.bloomPass = new (THREE as any).UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.2, 0);
+    this.bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.2, 0);
     this.composer.addPass(this.bloomPass);
     const copyShader = new THREE.ShaderPass(THREE.CopyShader);
     copyShader.renderToScreen = true;
@@ -77,9 +75,41 @@ export default class Azusa extends EventEmitter {
     this.scene = scene;
     this.camera = camera;
 
+
+    this.audio = new Audio({ fftsize: subdivisionSize });
     const frequencyBinCount = this.loadAudio(subdivisionSize).frequencyBinCount;
 
-    this.lineGroup = this.loadLine(frequencyBinCount - cutEnd - cutFront);
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 });
+
+    const nodeCount = frequencyBinCount - cutEnd - cutFront
+    this.nodes = range(0, nodeCount).map((index) => {
+      return new node(20, (index / nodeCount * 360 + 45) % 360, new THREE.Vector2(0, 0));
+    })
+
+    this.lineA = new THREE.Line(
+      new THREE.BufferGeometry().addAttribute('position',
+        this.renderGeometries(
+          this.nodes.map(node => node.positionA)
+        ).setDynamic(true))
+      , lineMaterial);
+
+    this.lineB = new THREE.Line(
+      new THREE.BufferGeometry().addAttribute('position',
+        this.renderGeometries(
+          this.nodes.map(node => node.positionB)
+        ).setDynamic(true))
+      , lineMaterial);
+
+
+    this.lines = range(0, nodeCount).map((index) => {
+      return new THREE.Line(
+        new THREE.BufferGeometry().addAttribute('position',
+          this.renderGeometries(
+            [this.nodes[index].positionA, this.nodes[index].positionB]
+          ).setDynamic(true))
+        , lineMaterial);
+    })
+    this.lineGroup = this.loadLine();
 
     this.TriangleGroup = this.loadTriangle();
 
@@ -126,35 +156,8 @@ export default class Azusa extends EventEmitter {
     this.composer.setSize(width, height);
   }
 
-  private loadLine(nodeCount: number) {
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 });
+  private loadLine() {
 
-    this.nodes = range(0, nodeCount).map((index) => {
-      return new node(20, (index / nodeCount * 360 + 45) % 360, new THREE.Vector2(0, 0));
-    })
-
-    this.lineB = new THREE.Line(
-      new THREE.BufferGeometry().addAttribute('position',
-        this.renderGeometries(
-          this.nodes.map(node => node.positionB)
-        ).setDynamic(true))
-      , lineMaterial);
-
-    this.lineA = new THREE.Line(
-      new THREE.BufferGeometry().addAttribute('position',
-        this.renderGeometries(
-          this.nodes.map(node => node.positionA)
-        ).setDynamic(true))
-      , lineMaterial);
-
-    this.lines = range(0, nodeCount).map((index) => {
-      return new THREE.Line(
-        new THREE.BufferGeometry().addAttribute('position',
-          this.renderGeometries(
-            [this.nodes[index].positionA, this.nodes[index].positionB]
-          ).setDynamic(true))
-        , lineMaterial);
-    })
     const lineGroup = new THREE.Group();
     lineGroup.add(this.lineB);
     lineGroup.add(this.lineA);
@@ -164,7 +167,6 @@ export default class Azusa extends EventEmitter {
   }
 
   private loadAudio(fftsize: number) {
-    this.audio = new Audio({ fftsize });
     this.camera.add(this.audio.listener);
     return this.audio;
   }
@@ -180,7 +182,7 @@ export default class Azusa extends EventEmitter {
   private addTriangle(
     material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ color: 0x03a9f4 }),
     lineMaterial: THREE.LineBasicMaterial = new THREE.LineBasicMaterial({ color: 0x03a9f4 })) {
-    const point = this.Triangles.length;
+    // const point = this.Triangles.length;
     const triangle = this.makeTriangle(material, lineMaterial, (t) => {
       this.Triangles = this.Triangles.filter((triangle) => {
         return triangle !== t;
@@ -261,3 +263,5 @@ export default class Azusa extends EventEmitter {
     requestAnimationFrame(this.render.bind(this));
   }
 }
+
+export default Azusa
