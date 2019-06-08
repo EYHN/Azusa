@@ -32,7 +32,7 @@ export class Azusa {
   private clock: THREE.Clock;
   private scale: number = 1;
   private lineGroup: THREE.Group;
-  private composer: THREE.EffectComposer;
+  private composer: any;
   private bloomPass: any;
   private cutFront: number;
   private cutEnd: number;

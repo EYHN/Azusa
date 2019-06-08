@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
@@ -47,10 +46,6 @@ module.exports = {
   devtool: "source-map",
 
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production'),
-      __DEV__: false
-    }),
     new HtmlWebpackPlugin(HtmlWebpackConfig),
     new ForkTsCheckerWebpackPlugin({
       async: false,

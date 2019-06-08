@@ -1,7 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-var webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const DeclarationBundlerPlugin = require('declaration-bundler-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -32,10 +30,6 @@ module.exports = {
   devtool: "source-map",
 
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production'),
-      __DEV__: false
-    }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
       openAnalyzer: true
@@ -97,14 +91,5 @@ module.exports = {
           },
 
       ]
-  },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new UglifyJsPlugin({
-        sourceMap: true,
-        include: /\.min\.js$/,
-      })
-    ],
   }
 }

@@ -4,8 +4,6 @@
  * Full-screen textured quad shader
  */
 
-import THREE from './ExtendThree';
-
 THREE.CopyShader = {
 
 	uniforms: {

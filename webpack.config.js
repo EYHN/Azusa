@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const HtmlWebpackConfig = {
@@ -25,9 +24,6 @@ module.exports = {
     devtool: "source-map",
 
     plugins: [
-        new webpack.DefinePlugin({
-			'process.env.NODE_ENV': JSON.stringify('development')
-		}),
         new HtmlWebpackPlugin(HtmlWebpackConfig),
     ],
 
